@@ -1,0 +1,1718 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RoomMates — Shared Living, Simplified</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0d0e;
+      --panel: #121617;
+      --panel2: #171c1d;
+      --line: #252c2d;
+      --text: #f4f7f6;
+      --muted: #8c9996;
+      --green: #42d6a0;
+      --green2: #143e31;
+      --red: #ff7777;
+      --red2: #402323;
+      --yellow: #e9c46a
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at 80% -10%, #173329 0, transparent 35%), var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 14px
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit
+    }
+
+    button {
+      cursor: pointer;
+      border: 0
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh
+    }
+
+    .sidebar {
+      width: 246px;
+      padding: 26px 16px;
+      border-right: 1px solid var(--line);
+      background: #0c0f10;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 4
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 0 10px
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #5bf0b7, #13845e);
+      display: grid;
+      place-items: center;
+      color: #05271b;
+      font-weight: 900;
+      font-size: 20px;
+      box-shadow: 0 8px 28px #27ca8b22
+    }
+
+    .brand b {
+      display: block;
+      font-size: 16px;
+      letter-spacing: -.5px
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 4px
+    }
+
+    .nav-label {
+      color: #63706d;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      padding: 0 12px;
+      margin-bottom: 8px
+    }
+
+    .nav {
+      display: grid;
+      gap: 5px
+    }
+
+    .nav button {
+      color: #91a09c;
+      background: transparent;
+      text-align: left;
+      padding: 12px;
+      border-radius: 11px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 500;
+      transition: .2s
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: #18211e;
+      color: #eafbf4
+    }
+
+    .nav button.active {
+      box-shadow: inset 3px 0 var(--green)
+    }
+
+    .nav .ico {
+      width: 19px;
+      text-align: center;
+      font-size: 16px
+    }
+
+    .sidebar-bottom {
+      margin-top: auto
+    }
+
+    .room-card {
+      background: linear-gradient(135deg, #182822, #131a18);
+      border: 1px solid #293c34;
+      border-radius: 15px;
+      padding: 15px
+    }
+
+    .room-card small {
+      color: #8da49a
+    }
+
+    .room-card strong {
+      display: block;
+      margin: 8px 0
+    }
+
+    .room-card p {
+      color: #92a29b;
+      font-size: 11px;
+      line-height: 1.6;
+      margin: 0
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 8px 0;
+      border-top: 1px solid var(--line);
+      margin-top: 16px
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #244c3d;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: #a9f6d6
+    }
+
+    .profile b {
+      font-size: 12px
+    }
+
+    .profile small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 4px
+    }
+
+    .main {
+      margin-left: 246px;
+      width: calc(100% - 246px);
+      padding: 30px 34px 60px;
+      max-width: 1600px
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 30px
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      color: var(--green);
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase
+    }
+
+    .topbar h1 {
+      font-size: 27px;
+      letter-spacing: -1px;
+      margin: 7px 0 0
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .month-select,
+    .ghost-btn {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: #dce5e2;
+      border-radius: 10px;
+      padding: 11px 13px
+    }
+
+    .primary-btn {
+      background: var(--green);
+      color: #08281d;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-weight: 800;
+      box-shadow: 0 5px 20px #42d6a022
+    }
+
+    .primary-btn:hover {
+      filter: brightness(1.07);
+      transform: translateY(-1px)
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 18px;
+      background: linear-gradient(145deg, #151a1b, #101414);
+      min-height: 139px;
+      position: relative;
+      overflow: hidden
+    }
+
+    .stat:after {
+      content: "";
+      position: absolute;
+      width: 95px;
+      height: 95px;
+      border-radius: 50%;
+      right: -35px;
+      top: -38px;
+      background: #42d6a00c
+    }
+
+    .stat-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #9aa8a3;
+      font-size: 12px
+    }
+
+    .stat-icon {
+      height: 30px;
+      width: 30px;
+      border-radius: 9px;
+      background: #1c2824;
+      display: grid;
+      place-items: center;
+      color: var(--green)
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 25px;
+      letter-spacing: -.9px;
+      margin: 18px 0 7px
+    }
+
+    .stat small {
+      font-size: 11px;
+      color: #71807b
+    }
+
+    .green {
+      color: var(--green) !important
+    }
+
+    .red {
+      color: var(--red) !important
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
+      gap: 16px;
+      margin-top: 18px
+    }
+
+    .panel {
+      background: linear-gradient(145deg, #141919, #101414);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      padding: 20px;
+      min-width: 0
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px
+    }
+
+    .panel h2 {
+      font-size: 14px;
+      margin: 0;
+      letter-spacing: -.2px
+    }
+
+    .panel-sub {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 10px;
+      background: #161c1c;
+      color: #aebbb6;
+      font-size: 11px
+    }
+
+    .chart {
+      height: 180px;
+      display: flex;
+      align-items: end;
+      gap: 12px;
+      padding: 8px 5px 0;
+      border-bottom: 1px solid #27302e;
+      position: relative
+    }
+
+    .bar-col {
+      height: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      align-items: center;
+      gap: 10px
+    }
+
+    .bar {
+      width: min(36px, 75%);
+      min-height: 4px;
+      border-radius: 7px 7px 2px 2px;
+      background: linear-gradient(180deg, #54e4ae, #237b5c);
+      position: relative;
+      transition: height .4s
+    }
+
+    .bar:hover {
+      filter: brightness(1.2)
+    }
+
+    .bar-label {
+      font-size: 10px;
+      color: #788681
+    }
+
+    .bar-value {
+      font-size: 9px;
+      color: #8d9c96
+    }
+
+    .split-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 15px 0;
+      border-bottom: 1px solid #252d2b
+    }
+
+    .split-row:last-child {
+      border-bottom: 0
+    }
+
+    .person-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-weight: 800
+    }
+
+    .ay {
+      background: #1a4435;
+      color: #8af0c5
+    }
+
+    .pr {
+      background: #282f4a;
+      color: #b3c5ff
+    }
+
+    .person-info {
+      flex: 1
+    }
+
+    .person-info b {
+      font-size: 12px
+    }
+
+    .person-info small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 5px
+    }
+
+    .person-amount {
+      text-align: right;
+      font-weight: 700
+    }
+
+    .person-amount small {
+      display: block;
+      color: var(--muted);
+      font-weight: 400;
+      font-size: 10px;
+      margin-top: 5px
+    }
+
+    .settlement {
+      margin-top: 16px;
+      background: #14271f;
+      border: 1px solid #214c3a;
+      padding: 16px;
+      border-radius: 13px
+    }
+
+    .settlement .label {
+      color: #91b5a5;
+      font-size: 11px
+    }
+
+    .settlement strong {
+      display: block;
+      font-size: 19px;
+      margin: 8px 0;
+      color: var(--green)
+    }
+
+    .settlement p {
+      margin: 0;
+      color: #92a79d;
+      font-size: 11px;
+      line-height: 1.6
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
+      gap: 16px;
+      margin-top: 16px
+    }
+
+    .transactions {
+      display: grid
+    }
+
+    .tx {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 0;
+      border-bottom: 1px solid #252d2b
+    }
+
+    .tx:last-child {
+      border: 0
+    }
+
+    .tx-icon {
+      width: 39px;
+      height: 39px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #202a26;
+      font-size: 17px
+    }
+
+    .tx-info {
+      flex: 1;
+      min-width: 0
+    }
+
+    .tx-info b {
+      display: block;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .tx-info small {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+      margin-top: 5px
+    }
+
+    .tx-amount {
+      text-align: right;
+      font-weight: 700;
+      font-size: 12px
+    }
+
+    .tx-amount small {
+      display: block;
+      margin-top: 5px;
+      font-size: 10px;
+      font-weight: 500
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 4px 7px;
+      border-radius: 6px;
+      font-size: 9px;
+      font-weight: 700;
+      background: #182f27;
+      color: var(--green)
+    }
+
+    .tag.expense {
+      background: #352222;
+      color: var(--red)
+    }
+
+    .budget-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      margin: 18px 0 9px
+    }
+
+    .track {
+      height: 7px;
+      background: #29312f;
+      border-radius: 20px;
+      overflow: hidden
+    }
+
+    .track span {
+      display: block;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(90deg, #2da778, #68e7b7)
+    }
+
+    .budget-note {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      margin-top: 17px
+    }
+
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block
+    }
+
+    .table-wrap {
+      overflow: auto
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px
+    }
+
+    .table th {
+      text-align: left;
+      color: #84928d;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 12px;
+      border-bottom: 1px solid var(--line)
+    }
+
+    .table td {
+      padding: 14px 12px;
+      border-bottom: 1px solid #202827;
+      font-size: 12px
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 35px
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 15px
+    }
+
+    .filters input,
+    .filters select {
+      background: #101515;
+      border: 1px solid var(--line);
+      color: var(--text);
+      border-radius: 9px;
+      padding: 10px
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: #000b;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px
+    }
+
+    .modal-backdrop.open {
+      display: flex
+    }
+
+    .modal {
+      width: min(560px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #131919;
+      border: 1px solid #2c3834;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 30px 100px #0008
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 18px
+    }
+
+    .close {
+      background: #222b28;
+      color: #c7d4ce;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      font-size: 19px
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    .field {
+      display: grid;
+      gap: 7px
+    }
+
+    .field.full {
+      grid-column: 1/-1
+    }
+
+    .field label {
+      font-size: 11px;
+      color: #a7b4ae
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: #0b1010;
+      border: 1px solid #2a3431;
+      border-radius: 9px;
+      padding: 12px;
+      color: #f4f7f6;
+      outline: none
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #42d6a0
+    }
+
+    .field textarea {
+      min-height: 70px;
+      resize: vertical
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: #183c2e;
+      border: 1px solid #2d7658;
+      color: #b6f8dc;
+      padding: 14px 18px;
+      border-radius: 12px;
+      z-index: 20;
+      box-shadow: 0 10px 40px #0008;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: .25s;
+      pointer-events: none
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .mobile-nav {
+      display: none
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    @media(max-width:1100px) {
+      .summary {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .content-grid,
+      .lower-grid {
+        grid-template-columns: 1fr
+      }
+
+      .main {
+        padding: 24px
+      }
+
+      .sidebar {
+        width: 220px
+      }
+
+      .main {
+        margin-left: 220px;
+        width: calc(100% - 220px)
+      }
+    }
+
+    @media(max-width:700px) {
+      .sidebar {
+        display: none
+      }
+
+      .main {
+        margin: 0;
+        width: 100%;
+        padding: 22px 15px 95px
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        margin-bottom: 22px
+      }
+
+      .topbar h1 {
+        font-size: 24px
+      }
+
+      .top-actions {
+        width: 100%
+      }
+
+      .top-actions>* {
+        flex: 1
+      }
+
+      .summary {
+        gap: 9px
+      }
+
+      .stat {
+        padding: 14px;
+        min-height: 122px;
+        border-radius: 14px
+      }
+
+      .stat strong {
+        font-size: 21px;
+        margin: 14px 0 6px
+      }
+
+      .stat-head {
+        font-size: 10px
+      }
+
+      .stat-icon {
+        height: 26px;
+        width: 26px
+      }
+
+      .panel {
+        padding: 16px
+      }
+
+      .content-grid,
+      .lower-grid {
+        gap: 12px;
+        margin-top: 12px
+      }
+
+      .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #0e1312ed;
+        backdrop-filter: blur(18px);
+        border-top: 1px solid var(--line);
+        z-index: 5;
+        justify-content: space-around;
+        padding: 9px 4px calc(9px + env(safe-area-inset-bottom))
+      }
+
+      .mobile-nav button {
+        display: grid;
+        gap: 4px;
+        justify-items: center;
+        background: transparent;
+        color: #84928d;
+        font-size: 9px;
+        padding: 5px
+      }
+
+      .mobile-nav button.active {
+        color: var(--green)
+      }
+
+      .mobile-nav span {
+        font-size: 17px
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr
+      }
+
+      .field.full {
+        grid-column: auto
+      }
+
+      .chart {
+        gap: 5px;
+        height: 150px
+      }
+
+      .bar-value {
+        font-size: 8px
+      }
+
+      .panel-head {
+        align-items: flex-start
+      }
+
+      .month-select,
+      .ghost-btn,
+      .primary-btn {
+        padding: 10px;
+        font-size: 11px
+      }
+    }
+
+    @media(min-width:1500px) {
+      .main {
+        margin-inline: auto;
+        position: relative;
+        left: 123px
+      }
+    }
+
+    /* RoomMates premium refresh */
+    :root {
+      --green: #43d9a2;
+      --bg: #080b0b;
+      --panel: #111716;
+      --line: #26312d;
+      --text: #f3f7f5;
+      --muted: #8b9b94
+    }
+
+    body {
+      background: radial-gradient(ellipse at 84% -12%, #173b2d 0, transparent 36%), radial-gradient(ellipse at 0% 100%, #10211b 0, transparent 28%), var(--bg);
+      letter-spacing: -.12px
+    }
+
+    .sidebar {
+      width: 258px;
+      padding: 27px 17px 18px;
+      background: rgba(9, 13, 12, .94);
+      border-right: 1px solid #24302b;
+      backdrop-filter: blur(20px);
+      gap: 30px
+    }
+
+    .brand {
+      padding: 0 9px
+    }
+
+    .logo {
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      font-size: 22px
+    }
+
+    .brand b {
+      font-size: 17px
+    }
+
+    .brand small {
+      letter-spacing: .55px;
+      font-size: 9px
+    }
+
+    .nav-label {
+      font-size: 10px;
+      letter-spacing: 1.7px;
+      margin-bottom: 11px
+    }
+
+    .nav {
+      gap: 6px
+    }
+
+    .nav button {
+      padding: 13px 12px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      font-size: 13px;
+      transition: background .18s, border-color .18s, transform .18s
+    }
+
+    .nav button:hover {
+      background: #141d19;
+      border-color: #25382f;
+      transform: translateX(2px)
+    }
+
+    .nav button.active {
+      background: linear-gradient(100deg, #173026, #141e19);
+      border-color: #243e32;
+      box-shadow: inset 3px 0 var(--green);
+      color: #f0fff8
+    }
+
+    .nav .ico {
+      font-size: 17px
+    }
+
+    .main {
+      margin-left: 258px;
+      width: calc(100% - 258px);
+      padding: 34px 38px 64px;
+      max-width: 1700px
+    }
+
+    .topbar {
+      margin-bottom: 28px;
+      align-items: center
+    }
+
+    .eyebrow {
+      letter-spacing: 1.8px;
+      font-size: 10px
+    }
+
+    .topbar h1 {
+      font-size: 30px;
+      letter-spacing: -1.2px;
+      font-weight: 750
+    }
+
+    .top-actions {
+      gap: 9px
+    }
+
+    .signed-in-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 6px 12px 6px 7px;
+      border: 1px solid #293932;
+      background: #111917;
+      border-radius: 13px;
+      min-width: 148px
+    }
+
+    .online-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4fe0a7;
+      box-shadow: 0 0 0 4px #4fe0a718
+    }
+
+    .signed-in-avatar {
+      width: 31px;
+      height: 31px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #45dca5, #1e7656);
+      color: #06281c;
+      display: grid;
+      place-items: center;
+      font-weight: 900
+    }
+
+    .signed-in-copy {
+      display: grid;
+      gap: 3px;
+      min-width: 0
+    }
+
+    .signed-in-copy small {
+      font-size: 8px;
+      color: #83978d;
+      letter-spacing: 1px
+    }
+
+    .signed-in-copy b {
+      font-size: 11px;
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .profile {
+      gap: 10px;
+      padding: 17px 3px 0;
+      margin-top: 16px
+    }
+
+    .profile .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      flex-shrink: 0
+    }
+
+    .profile-copy {
+      min-width: 0;
+      flex: 1
+    }
+
+    .profile-copy b {
+      display: block;
+      max-width: 145px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .profile-copy small {
+      font-size: 9px
+    }
+
+    .profile-menu {
+      width: 29px;
+      height: 29px;
+      border-radius: 9px;
+      background: #19231f;
+      border: 1px solid #293a32;
+      color: #a5c7b7
+    }
+
+    .room-card {
+      background: linear-gradient(140deg, #162b22, #111816);
+      border-color: #294538;
+      box-shadow: inset 0 1px #ffffff05
+    }
+
+    .room-card strong {
+      font-size: 13px;
+      line-height: 1.4
+    }
+
+    .stat {
+      background: linear-gradient(145deg, rgba(22, 29, 27, .98), rgba(13, 18, 17, .98));
+      border-color: #26332e;
+      transition: transform .2s, border-color .2s
+    }
+
+    .stat:hover {
+      transform: translateY(-2px);
+      border-color: #365745
+    }
+
+    .panel {
+      background: linear-gradient(145deg, rgba(20, 27, 25, .98), rgba(13, 18, 17, .98));
+      border-color: #26332e
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #55e6b4, #31c995);
+      box-shadow: 0 8px 25px #35d59a1c
+    }
+
+    .month-select,
+    .ghost-btn {
+      background: #121917;
+      border-color: #2a3831
+    }
+
+    .page .topbar {
+      position: relative
+    }
+
+    @media(max-width:1100px) {
+      .sidebar {
+        width: 226px
+      }
+
+      .main {
+        margin-left: 226px;
+        width: calc(100% - 226px);
+        padding: 24px
+      }
+
+      .signed-in-chip {
+        min-width: 0
+      }
+    }
+
+    @media(max-width:700px) {
+      .main {
+        margin: 0;
+        width: 100%;
+        padding: 20px 14px 95px
+      }
+
+      .topbar {
+        gap: 15px
+      }
+
+      .top-actions {
+        display: flex;
+        flex-wrap: wrap
+      }
+
+      .signed-in-chip {
+        order: -1;
+        width: 100%;
+        flex: 1
+      }
+
+      .signed-in-copy b {
+        max-width: 220px
+      }
+
+      .top-actions .month-select {
+        flex: 1
+      }
+
+      .top-actions .primary-btn {
+        flex: 1
+      }
+
+      .topbar h1 {
+        font-size: 25px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="connectionGate"
+    style="position:fixed;inset:0;background:#070a09f5;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto">
+    <div
+      style="width:min(540px,100%);background:#121817;border:1px solid #2a3933;border-radius:20px;padding:26px;box-shadow:0 25px 90px #0009">
+      <div class="eyebrow">ROOMMATES · SECURE SETUP</div>
+      <h2 style="font-size:25px;margin:9px 0">Connect your shared home</h2>
+      <p style="color:#9aa8a3;line-height:1.6;margin:0 0 18px">Connect this website to your Supabase project. Use the
+        Project URL and publishable/anon key only. Never enter a service_role or secret key here.</p>
+      <div id="configForm" style="display:grid;gap:12px">
+        <div class="field"><label for="sbUrl">Supabase Project URL</label><input id="sbUrl"
+            placeholder="https://your-project.supabase.co" autocomplete="url"></div>
+        <div class="field"><label for="sbKey">Publishable key (or legacy anon key)</label><input id="sbKey"
+            placeholder="sb_publishable_…" autocomplete="off"></div>
+        <button class="primary-btn" id="connectBtn">Connect project</button>
+      </div>
+      <div id="authArea" style="display:none;margin-top:18px">
+        <div class="field" style="margin-bottom:12px"><label for="authName">Your display name (for sign
+            up)</label><input id="authName" placeholder="Ayush"></div>
+        <div class="field" style="margin-bottom:12px"><label for="authEmail">Email</label><input id="authEmail"
+            type="email" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="field" style="margin-bottom:12px"><label for="authPassword">Password</label><input id="authPassword"
+            type="password" placeholder="At least 6 characters" autocomplete="current-password"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="primary-btn" id="signInBtn">Sign
+            in</button><button class="ghost-btn" id="signUpBtn">Create account</button><button class="ghost-btn"
+            id="changeConfigBtn">Change project</button></div>
+      </div>
+      <div id="householdArea" style="display:none;margin-top:18px">
+        <p id="welcomeText" style="color:#b8c7c0"></p>
+        <div class="field" style="margin-bottom:12px"><label for="householdName">Create a household</label><input
+            id="householdName" placeholder="Ayush & Priyatam's Room"></div>
+        <div class="field" style="margin-bottom:12px"><label for="openingFund">Opening fund (₹, optional)</label><input
+            id="openingFund" type="number" min="0" step="0.01" value="0"></div>
+        <button class="primary-btn" id="createHouseholdBtn">Create household</button>
+        <div style="height:1px;background:#29332f;margin:18px 0"></div>
+        <div class="field" style="margin-bottom:12px"><label for="inviteCode">Join with invite code</label><input
+            id="inviteCode" placeholder="Paste your friend's invite code"></div><button class="ghost-btn"
+          id="joinHouseholdBtn">Join household</button>
+      </div>
+      <div id="connectedArea" style="display:none;margin-top:18px">
+        <p id="connectedText" style="color:#b8c7c0"></p><button class="primary-btn" id="openAppBtn">Open
+          RoomMates</button><button class="ghost-btn" id="signOutBtn" style="margin-left:8px">Sign out</button>
+      </div>
+      <p id="gateMessage" role="status" style="color:#9ff0c8;line-height:1.5;margin:16px 0 0"></p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">R</div>
+        <div><b>RoomMates</b><small>SHARED LIVING, SIMPLIFIED</small></div>
+      </div>
+      <div>
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="nav" id="sideNav">
+          <button class="active" data-page="dashboard"><span class="ico">◫</span>Dashboard</button>
+          <button data-page="transactions"><span class="ico">↔</span>Transactions</button>
+          <button data-action="expense"><span class="ico">＋</span>Add expense</button>
+          <button data-action="contribution"><span class="ico">↗</span>Add contribution</button>
+          <button data-page="fund"><span class="ico">▣</span>Shared fund</button>
+          <button data-page="settlement"><span class="ico">⇄</span>Settlement</button>
+          <button data-page="budgets"><span class="ico">◷</span>Budgets</button>
+          <button data-page="reports"><span class="ico">▥</span>Reports</button>
+        </nav>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="room-card"><small>YOUR HOUSEHOLD</small><strong>Shared home</strong>
+          <p>One space for bills, groceries and transparent shared spending.</p>
+        </div>
+        <div class="profile">
+          <div class="avatar">R</div>
+          <div class="profile-copy"><b>Roommate</b><small>Signed-in account</small></div><button class="profile-menu"
+            id="profileSignOut" title="Sign out" aria-label="Sign out">↗</button>
+        </div>
+      </div>
+    </aside>
+    <main class="main">
+      <section class="page active" id="page-dashboard">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">SATURDAY, OCTOBER 10, 2026</div>
+            <h1>Your household at a glance<span style="color:var(--green)">.</span></h1>
+          </div>
+          <div class="top-actions">
+            <div class="signed-in-chip"><span class="online-dot"></span><span class="signed-in-avatar"
+                id="headerAvatar">R</span><span class="signed-in-copy"><small>SIGNED IN AS</small><b
+                  id="headerUserName">Roommate</b></span></div><select class="month-select" id="monthFilter"
+              aria-label="Choose month">
+              <option value="all">All time</option>
+              <option value="2026-10" selected>October 2026</option>
+              <option value="2026-09">September 2026</option>
+            </select><button class="primary-btn" data-action="expense">＋ Add transaction</button>
+          </div>
+        </header>
+        <div class="summary">
+          <div class="stat">
+            <div class="stat-head">Household expenses <span class="stat-icon">↘</span></div><strong
+              id="totalExpenses">₹0</strong><small>Shared + personal expenses</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Total contributions <span class="stat-icon">↗</span></div><strong
+              id="totalContributions">₹0</strong><small>Money added to household fund</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Shared fund balance <span class="stat-icon">▣</span></div><strong
+              id="fundBalance">₹0</strong><small>Contributions minus fund-paid bills</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">This month's expenses <span class="stat-icon">▦</span></div><strong
+              id="monthExpenses">₹0</strong><small id="monthCaption">October 2026</small>
+          </div>
+        </div>
+        <div class="content-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Spending overview</h2>
+                <div class="panel-sub">Monthly expenses at a glance</div>
+              </div><span class="pill">Last 6 months</span>
+            </div>
+            <div class="chart" id="spendingChart"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Who's paying what?</h2>
+                <div class="panel-sub">Shared expenses paid directly</div>
+              </div><span class="pill">Split view</span>
+            </div>
+            <div class="split-row">
+              <div class="person-avatar ay">A</div>
+              <div class="person-info"><b>Ayush</b><small id="ayushSub">Shared payments</small></div>
+              <div class="person-amount" id="ayushPaid">₹0<small>paid directly</small></div>
+            </div>
+            <div class="split-row">
+              <div class="person-avatar pr">P</div>
+              <div class="person-info"><b>Priyatam</b><small id="priyatamSub">Shared payments</small></div>
+              <div class="person-amount" id="priyatamPaid">₹0<small>paid directly</small></div>
+            </div>
+            <div class="settlement">
+              <div class="label">CURRENT SETTLEMENT</div><strong id="settlementText">You're all settled up!</strong>
+              <p id="settlementDetail">Add shared expenses to calculate who owes whom.</p>
+            </div>
+          </section>
+        </div>
+        <div class="lower-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Recent activity</h2>
+                <div class="panel-sub">Every rupee, accounted for</div>
+              </div><button class="pill" data-page="transactions">View all ↗</button>
+            </div>
+            <div class="transactions" id="recentTransactions"></div>
+          </section>
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Monthly budget</h2>
+                <div class="panel-sub">Keep your shared spending on track</div>
+              </div><span class="pill">This month</span>
+            </div>
+            <div class="budget-line"><span>Household budget</span><b id="budgetNumbers">₹0 / ₹15,000</b></div>
+            <div class="track"><span id="budgetBar" style="width:0%"></span></div>
+            <div class="budget-note" id="budgetNote">Add expenses to see your monthly budget usage.</div>
+            <div style="margin-top:22px"><button class="ghost-btn" data-page="budgets">Manage budget →</button></div>
+          </section>
+        </div>
+      </section>
+      <section class="page" id="page-transactions">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">YOUR LEDGER</div>
+            <h1>Transactions<span style="color:var(--green)">.</span></h1>
+          </div><button class="primary-btn" data-action="expense">＋ Add transaction</button>
+        </header>
+        <section class="panel">
+          <div class="filters"><input id="searchTx" placeholder="Search title or description…"
+              aria-label="Search transactions"><select id="typeFilter">
+              <option value="all">All types</option>
+              <option value="expense">Expenses</option>
+              <option value="contribution">Contributions</option>
+            </select><select id="personFilter">
+              <option value="all">Everyone</option>
+              <option>Ayush</option>
+              <option>Priyatam</option>
+            </select></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Transaction</th>
+                  <th>Category</th>
+                  <th>Paid / added by</th>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="transactionRows"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+      <section class="page" id="page-fund">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">HOUSEHOLD WALLET</div>
+            <h1>Shared fund<span style="color:var(--green)">.</span></h1>
+          </div><button class="primary-btn" data-action="contribution">＋ Add money</button>
+        </header>
+        <div class="summary" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <div class="stat">
+            <div class="stat-head">Current fund balance <span class="stat-icon">▣</span></div><strong
+              id="fundBalance2">₹0</strong><small>Contributions minus expenses paid from fund</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Total added <span class="stat-icon">↗</span></div><strong
+              id="fundAdded2">₹0</strong><small>All household contributions</small>
+          </div>
+        </div>
+        <section class="panel" style="margin-top:16px">
+          <div class="panel-head">
+            <div>
+              <h2>Fund activity</h2>
+              <div class="panel-sub">Contributions and expenses paid from the shared fund</div>
+            </div>
+          </div>
+          <div class="transactions" id="fundActivity"></div>
+        </section>
+      </section>
+      <section class="page" id="page-settlement">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">FAIR & TRANSPARENT</div>
+            <h1>Settlement<span style="color:var(--green)">.</span></h1>
+          </div>
+        </header>
+        <section class="panel">
+          <h2>Shared expense balance</h2>
+          <div class="panel-sub">Personal expenses and household-fund contributions do not affect this calculation.
+          </div>
+          <div class="settlement" style="margin-top:20px">
+            <div class="label">WHO OWES WHOM</div><strong id="settlementText2">You're all settled up!</strong>
+            <p id="settlementDetail2"></p>
+          </div>
+          <div class="split-row">
+            <div class="person-avatar ay">A</div>
+            <div class="person-info"><b>Ayush paid</b><small>Shared expenses paid personally</small></div>
+            <div class="person-amount" id="settleAyush">₹0</div>
+          </div>
+          <div class="split-row">
+            <div class="person-avatar pr">P</div>
+            <div class="person-info"><b>Priyatam paid</b><small>Shared expenses paid personally</small></div>
+            <div class="person-amount" id="settlePriyatam">₹0</div>
+          </div>
+          <p class="budget-note">Demo calculation assumes a 50/50 split for each shared expense. Custom splits and
+            recorded settlement history will be added in the database-backed version.</p>
+        </section>
+      </section>
+      <section class="page" id="page-budgets">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">SPEND WITH INTENTION</div>
+            <h1>Budgets<span style="color:var(--green)">.</span></h1>
+          </div>
+        </header>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>Monthly household budget</h2>
+              <div class="panel-sub">Set a limit for shared + personal expenses</div>
+            </div>
+          </div>
+          <div class="field" style="max-width:320px"><label for="budgetInput">Budget amount (₹)</label><input
+              id="budgetInput" type="number" min="0" step="100" value="15000"></div><button class="primary-btn"
+            id="saveBudget" style="margin-top:14px">Save budget</button>
+          <div class="budget-line"><span>Spent this month</span><b id="budgetNumbers2">₹0 / ₹15,000</b></div>
+          <div class="track"><span id="budgetBar2" style="width:0%"></span></div>
+          <div class="budget-note" id="budgetNote2"></div>
+        </section>
+      </section>
+      <section class="page" id="page-reports">
+        <header class="topbar">
+          <div>
+            <div class="eyebrow">NUMBERS THAT MAKE SENSE</div>
+            <h1>Reports & analytics<span style="color:var(--green)">.</span></h1>
+          </div><button class="ghost-btn" id="exportCsv">↓ Export CSV</button>
+        </header>
+        <div class="summary">
+          <div class="stat">
+            <div class="stat-head">Expenses recorded</div><strong id="reportCount">0</strong><small>All transaction
+              entries</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Average expense</div><strong id="reportAverage">₹0</strong><small>Per expense
+              record</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Biggest category</div><strong id="reportCategory"
+              style="font-size:18px">—</strong><small>By total spending</small>
+          </div>
+          <div class="stat">
+            <div class="stat-head">Fund contributions</div><strong id="reportContrib">₹0</strong><small>All time</small>
+          </div>
+        </div>
+        <section class="panel" style="margin-top:16px">
+          <div class="panel-head">
+            <div>
+              <h2>Category breakdown</h2>
+              <div class="panel-sub">Expenses grouped by category</div>
+            </div>
+          </div>
+          <div id="categoryBreakdown"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+  <nav class="mobile-nav" id="mobileNav"><button class="active" data-page="dashboard"><span>◫</span>Home</button><button
+      data-page="transactions"><span>↔</span>Activity</button><button
+      data-action="expense"><span>＋</span>Add</button><button data-page="fund"><span>▣</span>Fund</button><button
+      data-page="settlement"><span>⇄</span>Split</button></nav>
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="modalTitle">Add expense</h2><button class="close" id="closeModal" aria-label="Close">×</button>
+      </div>
+      <form id="txForm">
+        <div class="form-grid" id="formFields"></div>
+        <div class="form-actions"><button type="button" class="ghost-btn" id="cancelModal">Cancel</button><button
+            class="primary-btn" type="submit" id="submitTx">Save transaction</button></div>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const CATEGORIES = ['Room Rent', 'Electricity Bill', 'Vegetables', 'Grocery / Ration', 'Milk & Dairy', 'Drinking Water', 'Gas Cylinder', 'Internet / Wi-Fi', 'Cleaning Supplies', 'Household Items', 'Food & Snacks', 'Transport', 'Repairs & Maintenance', 'Personal Shopping', 'Medical', 'Other'];
+    const money = n => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(n || 0);
+    const today = () => new Date().toISOString().slice(0, 10);
+    const seed = [
+      { id: 's1', kind: 'expense', title: 'Room rent', category: 'Room Rent', amount: 4500, person: 'Ayush', date: '2026-10-01', expenseType: 'shared', paymentSource: 'personal', method: 'UPI', description: 'October room rent', createdBy: 'Ayush' },
+      { id: 's2', kind: 'expense', title: 'Electricity bill', category: 'Electricity Bill', amount: 850, person: 'Priyatam', date: '2026-10-03', expenseType: 'shared', paymentSource: 'personal', method: 'UPI', description: 'Monthly electricity', createdBy: 'Priyatam' },
+      { id: 's3', kind: 'contribution', title: 'Household fund contribution', category: 'Contribution', amount: 2000, person: 'Priyatam', date: '2026-10-04', method: 'UPI', description: 'Monthly household fund', createdBy: 'Priyatam' },
+      { id: 's4', kind: 'expense', title: 'Vegetables & greens', category: 'Vegetables', amount: 320, person: 'Ayush', date: '2026-10-06', expenseType: 'shared', paymentSource: 'personal', method: 'Cash', description: 'Fresh vegetables', createdBy: 'Ayush' },
+      { id: 's5', kind: 'expense', title: 'Grocery run', category: 'Grocery / Ration', amount: 620, person: 'Priyatam', date: '2026-10-08', expenseType: 'shared', paymentSource: 'personal', method: 'UPI', description: 'Rice, pulses and oil', createdBy: 'Priyatam' },
+      { id: 's6', kind: 'expense', title: 'Coffee & snacks', category: 'Food & Snacks', amount: 180, person: 'Ayush', date: '2026-10-09', expenseType: 'personal', paymentSource: 'personal', method: 'UPI', description: 'Personal snack', createdBy: 'Ayush' }
+    ];
+    let txs = JSON.parse(localStorage.getItem('roommates_transactions') || 'null') || seed;
+    let budget = Number(localStorage.getItem('roommates_budget') || 15000), currentAction = 'expense';
+    const save = () => localStorage.setItem('roommates_transactions', JSON.stringify(txs));
+    function isSelectedMonth(t) { const m = document.getElementById('monthFilter')?.value || 'all'; return m === 'all' || t.date?.startsWith(m) }
+    function expenses(list = txs) { return list.filter(t => t.kind === 'expense') }
+    function contributions(list = txs) { return list.filter(t => t.kind === 'contribution') }
+    function fundExpenses(list = txs) { return expenses(list).filter(t => t.paymentSource === 'fund') }
+    function fundBalance() { return contributions().reduce((s, t) => s + t.amount, 0) - fundExpenses().reduce((s, t) => s + t.amount, 0) }
+    function sharedDirect(person) { return expenses().filter(t => t.expenseType === 'shared' && t.paymentSource !== 'fund' && t.person === person).reduce((s, t) => s + t.amount, 0) }
+    function settlement() { const shared = expenses().filter(t => t.expenseType === 'shared'); const names = window.roommateNames || ['Ayush', 'Priyatam']; let firstPaid = 0, secondPaid = 0, firstShare = 0, secondShare = 0; for (const t of shared) { if (t.paymentSource === 'fund') continue; if (t.person === names[0]) firstPaid += t.amount; else if (t.person === names[1]) secondPaid += t.amount; firstShare += t.amount / 2; secondShare += t.amount / 2; } return { net: firstPaid - firstShare, ayPaid: firstPaid, prPaid: secondPaid, ayShare: firstShare, prShare: secondShare } }
+    function iconFor(t) { if (t.kind === 'contribution') return '↗'; return ({ 'Room Rent': '⌂', 'Electricity Bill': 'ϟ', 'Vegetables': '♧', 'Grocery / Ration': '▤', 'Milk & Dairy': '◒', 'Food & Snacks': '☕', 'Transport': '↗', 'Medical': '＋' })[t.category] || '◈' }
+    function toast(msg) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2600) }
+    function nav(page) { document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + page)); document.querySelectorAll('[data-page]').forEach(b => b.classList.toggle('active', b.dataset.page === page)); render() }
+    function openModal(kind) {
+      currentAction = kind; document.getElementById('modalTitle').textContent = kind === 'contribution' ? 'Add contribution' : 'Add expense'; document.getElementById('submitTx').textContent = kind === 'contribution' ? 'Add contribution' : 'Save expense'; const fields = document.getElementById('formFields'); const field = (label, name, control, full = false) => `<div class="field ${full ? 'full' : ''}"><label for="${name}">${label}</label>${control}</div>`; let html = field('Amount (₹)', 'amount', '<input id="amount" name="amount" type="number" min="0.01" step="0.01" placeholder="0.00" required>') + field('Paid / added by', 'person', `<select id="person" name="person">${(window.roommateNames || ['Ayush', 'Priyatam']).map(n => `<option>${esc(n)}</option>`).join('')}</select>`) + field('Title', 'title', '<input id="title" name="title" placeholder="' + (kind === 'contribution' ? 'Household fund contribution' : 'e.g. Monthly groceries') + '" required>', true);
+      if (kind === 'expense') { html += field('Category', 'category', `<select id="category" name="category">${CATEGORIES.map(c => `<option>${c}</option>`).join('')}</select>`) + field('Expense type', 'expenseType', '<select id="expenseType" name="expenseType"><option value="shared">Shared</option><option value="personal">Personal</option></select>') + field('Paid using', 'paymentSource', '<select id="paymentSource" name="paymentSource"><option value="personal">Personal payment</option><option value="fund">Shared household fund</option></select>') }
+      html += field(kind === 'contribution' ? 'Contribution date' : 'Expense date', 'date', `<input id="date" name="date" type="date" value="${today()}" required>`) + field('Payment method', 'method', '<select id="method" name="method"><option>UPI</option><option>Cash</option><option>Bank transfer</option><option>Other</option></select>') + field('Description / note', 'description', '<textarea id="description" name="description" placeholder="Add a helpful note…"></textarea>', true);
+      fields.innerHTML = html; document.getElementById('modalBackdrop').classList.add('open'); setTimeout(() => document.getElementById('amount').focus(), 50)
+    }
+    function closeModal() { document.getElementById('modalBackdrop').classList.remove('open') }
+    function render() {
+      const allE = expenses(), allC = contributions(), filtered = txs.filter(isSelectedMonth), monthE = expenses(filtered), monthSpend = monthE.reduce((s, t) => s + t.amount, 0), totalE = allE.reduce((s, t) => s + t.amount, 0), totalC = allC.reduce((s, t) => s + t.amount, 0);
+      document.getElementById('totalExpenses').textContent = money(filtered.filter(t => t.kind === 'expense').reduce((s, t) => s + t.amount, 0)); document.getElementById('totalContributions').textContent = money(filtered.filter(t => t.kind === 'contribution').reduce((s, t) => s + t.amount, 0)); document.getElementById('fundBalance').textContent = money(fundBalance()); document.getElementById('monthExpenses').textContent = money(monthSpend); document.getElementById('monthCaption').textContent = document.getElementById('monthFilter').selectedOptions[0].text;
+      const s = settlement(); document.getElementById('ayushPaid').innerHTML = money(s.ayPaid) + '<small>paid directly</small>'; document.getElementById('priyatamPaid').innerHTML = money(s.prPaid) + '<small>paid directly</small>'; document.getElementById('settleAyush').textContent = money(s.ayPaid); document.getElementById('settlePriyatam').textContent = money(s.prPaid);
+      const names = window.roommateNames || ['Ayush', 'Priyatam']; let st = 'You’re all settled up!', detail = 'Both household members are even on direct shared expenses.'; if (s.net > 0.01) { st = names[1] + ' owes ' + names[0] + ' ' + money(s.net / 2); detail = names[0] + ' paid more than their allocated 50% share.' } else if (s.net < -.01) { st = names[0] + ' owes ' + names[1] + ' ' + money(Math.abs(s.net) / 2); detail = names[1] + ' paid more than their allocated 50% share.' }
+      document.getElementById('settlementText').textContent = st; document.getElementById('settlementDetail').textContent = detail; document.getElementById('settlementText2').textContent = st; document.getElementById('settlementDetail2').textContent = detail;
+      document.getElementById('fundBalance2').textContent = money(fundBalance()); document.getElementById('fundAdded2').textContent = money(totalC);
+      const chart = document.getElementById('spendingChart'); const months = []; const now = new Date(); for (let i = 5; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); const key = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0'); months.push({ key, label: d.toLocaleDateString('en-IN', { month: 'short' }), amount: expenses().filter(t => t.date?.startsWith(key)).reduce((a, t) => a + t.amount, 0) }) } const max = Math.max(1, ...months.map(m => m.amount)); chart.innerHTML = months.map(m => `<div class="bar-col"><div class="bar-value">${m.amount ? money(m.amount).replace('₹', '₹') : ''}</div><div class="bar" title="${m.label}: ${money(m.amount)}" style="height:${Math.max(3, m.amount / max * 115)}px"></div><div class="bar-label">${m.label}</div></div>`).join('');
+      const recent = [...txs].sort((a, b) => (b.date || '').localeCompare(a.date || '')).slice(0, 5); document.getElementById('recentTransactions').innerHTML = recent.length ? recent.map(txHTML).join('') : '<div class="empty">No transactions yet. Add your first one above.</div>';
+      const pct = budget ? Math.min(100, monthSpend / budget * 100) : 0; document.getElementById('budgetNumbers').textContent = `${money(monthSpend)} / ${money(budget)}`; document.getElementById('budgetBar').style.width = pct + '%'; document.getElementById('budgetNote').textContent = pct >= 100 ? 'You’ve reached your budget. Review recent spending together.' : pct >= 80 ? `You’ve used ${Math.round(pct)}% of your budget. Keep an eye on spending.` : `${money(Math.max(0, budget - monthSpend))} remaining this month (${Math.round(pct)}% used).`;
+      document.getElementById('budgetInput').value = budget; document.getElementById('budgetNumbers2').textContent = `${money(monthSpend)} / ${money(budget)}`; document.getElementById('budgetBar2').style.width = pct + '%'; document.getElementById('budgetNote2').textContent = document.getElementById('budgetNote').textContent;
+      const q = (document.getElementById('searchTx')?.value || '').toLowerCase(), type = document.getElementById('typeFilter')?.value || 'all', person = document.getElementById('personFilter')?.value || 'all'; const list = [...txs].filter(t => (type === 'all' || t.kind === type) && (person === 'all' || t.person === person) && (`${t.title} ${t.description || ''} ${t.category}`).toLowerCase().includes(q)).sort((a, b) => (b.date || '').localeCompare(a.date || '')); document.getElementById('transactionRows').innerHTML = list.length ? list.map(t => `<tr><td><b>${esc(t.title)}</b><div class="muted" style="font-size:10px;margin-top:5px">${esc(t.description || '')}</div></td><td>${esc(t.category)}</td><td>${esc(t.person)}</td><td>${esc(t.date)}</td><td><span class="tag ${t.kind === 'expense' ? 'expense' : ''}">${t.kind === 'expense' ? 'Expense' : 'Contribution'}</span></td><td class="${t.kind === 'expense' ? 'red' : 'green'}">${t.kind === 'expense' ? '−' : '+'}${money(t.amount)}</td><td><button class="pill" onclick="deleteTx('${t.id}')">Delete</button></td></tr>`).join('') : '<tr><td colspan="7" class="empty">No matching transactions found.</td></tr>';
+      const fund = [...txs].filter(t => t.kind === 'contribution' || t.paymentSource === 'fund').sort((a, b) => (b.date || '').localeCompare(a.date || '')); document.getElementById('fundActivity').innerHTML = fund.length ? fund.map(txHTML).join('') : '<div class="empty">No fund activity yet. Add a contribution to get started.</div>';
+      document.getElementById('reportCount').textContent = allE.length; document.getElementById('reportAverage').textContent = money(allE.length ? totalE / allE.length : 0); document.getElementById('reportContrib').textContent = money(totalC); const cats = {}; allE.forEach(t => cats[t.category] = (cats[t.category] || 0) + t.amount); const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]); document.getElementById('reportCategory').textContent = sorted[0]?.[0] || '—'; document.getElementById('categoryBreakdown').innerHTML = sorted.length ? sorted.map(([name, amt]) => `<div class="budget-line"><span>${esc(name)}</span><b>${money(amt)}</b></div><div class="track"><span style="width:${amt / Math.max(1, totalE) * 100}%"></span></div>`).join('') : '<div class="empty">Category reports will appear when expenses are added.</div>';
+    }
+    function txHTML(t) { return `<div class="tx"><div class="tx-icon">${iconFor(t)}</div><div class="tx-info"><b>${esc(t.title)}</b><small>${esc(t.person)} · ${esc(t.date)} · ${esc(t.category)}</small></div><div class="tx-amount ${t.kind === 'expense' ? 'red' : 'green'}">${t.kind === 'expense' ? '−' : '+'}${money(t.amount)}<small><span class="tag ${t.kind === 'expense' ? 'expense' : ''}">${t.kind === 'expense' ? 'Expense' : 'Added to fund'}</span></small></div></div>` }
+    function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
+    async function deleteTx(id) {
+      if (!confirm('Delete this transaction from the shared household?')) return;
+      if (typeof window.roommatesDeleteTransaction === 'function') {
+        await window.roommatesDeleteTransaction(id);
+        return;
+      }
+      // Offline/demo fallback only; database-backed sessions install the handler below.
+      txs = txs.filter(t => String(t.id) !== String(id)); save(); render(); toast('Transaction deleted locally');
+    }
+    document.addEventListener('click', e => { const action = e.target.closest('[data-action]'); if (action) { openModal(action.dataset.action); return } const pg = e.target.closest('[data-page]'); if (pg) { nav(pg.dataset.page) } });
+    document.getElementById('closeModal').onclick = closeModal; document.getElementById('cancelModal').onclick = closeModal; document.getElementById('modalBackdrop').addEventListener('click', e => { if (e.target.id === 'modalBackdrop') closeModal() });
+    document.getElementById('txForm').addEventListener('submit', e => { e.preventDefault(); const fd = new FormData(e.target), kind = currentAction, amount = Number(fd.get('amount')); if (!Number.isFinite(amount) || amount <= 0) { toast('Enter a valid amount'); return } const person = fd.get('person'); txs.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), kind, title: fd.get('title').trim(), category: kind === 'contribution' ? 'Contribution' : fd.get('category'), amount: Math.round(amount * 100) / 100, person, date: fd.get('date'), method: fd.get('method'), description: fd.get('description'), expenseType: kind === 'expense' ? fd.get('expenseType') : null, paymentSource: kind === 'expense' ? fd.get('paymentSource') : null, createdBy: 'Ayush' }); save(); closeModal(); render(); toast(kind === 'contribution' ? 'Contribution added successfully' : 'Expense saved successfully'); e.target.reset() });
+    ['searchTx', 'typeFilter', 'personFilter'].forEach(id => document.getElementById(id).addEventListener(id === 'searchTx' ? 'input' : 'change', render)); document.getElementById('monthFilter').addEventListener('change', render);
+    document.getElementById('saveBudget').onclick = () => { budget = Math.max(0, Number(document.getElementById('budgetInput').value) || 0); localStorage.setItem('roommates_budget', budget); render(); toast('Monthly budget updated') };
+    document.getElementById('exportCsv').onclick = () => { const rows = [['Type', 'Title', 'Category', 'Amount INR', 'Person', 'Date', 'Expense type', 'Payment source', 'Payment method', 'Description'], ...txs.map(t => [t.kind, t.title, t.category, t.amount, t.person, t.date, t.expenseType || '', t.paymentSource || '', t.method || '', t.description || ''])]; const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'roommates-transactions.csv'; a.click(); URL.revokeObjectURL(a.href); toast('CSV export ready') };
+    render();
+  </script>
+
+  <script>
+    // Supabase integration layer. The publishable/anon key is designed for browser use; RLS remains essential.
+    (function () {
+      const $ = id => document.getElementById(id), gate = $('connectionGate');
+      let client = null, user = null, household = null, members = [], realtimeChannel = null, connected = false;
+      const cfg = () => ({ url: localStorage.getItem('roommates_sb_url') || '', key: localStorage.getItem('roommates_sb_key') || '' });
+      const say = m => { $('gateMessage').textContent = m };
+      const show = which => { ['configForm', 'authArea', 'householdArea', 'connectedArea'].forEach(id => $(id).style.display = id === which ? 'block' : 'none') };
+      const safeName = u => u?.user_metadata?.display_name || u?.email?.split('@')[0] || 'Roommate';
+      const paise = n => Math.round(Number(n || 0) * 100);
+      const dateIso = d => d ? new Date(d).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+      function mapTx(t) { return { id: t.id, kind: t.transaction_type, title: t.title, category: t.category || (t.transaction_type === 'contribution' ? 'Contribution' : 'Other'), amount: Number(t.amount_paise || 0) / 100, person: members.find(m => m.user_id === t.payer_id)?.profiles?.display_name || t.created_by_name || 'Roommate', payerId: t.payer_id, date: dateIso(t.transaction_date), expenseType: t.expense_type, paymentSource: t.payment_source, method: ({ upi: 'UPI', cash: 'Cash', bank_transfer: 'Bank transfer', other: 'Other' })[t.payment_method] || 'UPI', description: t.description || t.notes || '', createdBy: t.created_by_name, deletedAt: t.deleted_at }; }
+      async function initClient() { const c = cfg(); if (!c.url || !c.key) { show('configForm'); return } if (!window.supabase?.createClient) { say('Supabase client library did not load. Check your internet connection and refresh.'); show('configForm'); return } try { client = window.supabase.createClient(c.url, c.key); const { data, error } = await client.auth.getSession(); if (error) throw error; if (data.session) { user = data.session.user; await afterAuth() } else show('authArea'); } catch (e) { say('Connection error: ' + e.message); show('configForm') } }
+      async function afterAuth() {
+        const { data: prof, error: pErr } = await client.from('profiles').select('display_name').eq('id', user.id).maybeSingle(); if (pErr) throw pErr;
+        const { data: membership, error: mErr } = await client.from('household_members').select('household_id,role,households(id,name,invite_code,opening_fund_paise)').eq('user_id', user.id).maybeSingle(); if (mErr) throw mErr;
+        if (!membership) { $('welcomeText').textContent = 'Signed in as ' + (prof?.display_name || safeName(user)) + '. Create a household or join your friend with an invite code.'; show('householdArea'); return }
+        household = membership.households; await loadMembers(); await loadTransactions(); await loadBudget(); connected = true; $('connectedText').textContent = 'Connected as ' + (prof?.display_name || safeName(user)) + ' · Household: ' + household.name + ' · Invite code: ' + household.invite_code; show('connectedArea'); say('Your account and household are connected.');
+      }
+      async function loadMembers() { const { data, error } = await client.from('household_members').select('user_id,role,profiles(display_name)').eq('household_id', household.id); if (error) throw error; members = data || []; const names = members.map(m => m.profiles?.display_name || 'Roommate').slice(0, 2); window.roommateNames = names; const first = names[0] || safeName(user), second = names[1] || 'Waiting for roommate'; const labels = [['ayushPaid', first], ['priyatamPaid', second], ['settleAyush', first + ' paid'], ['settlePriyatam', second + ' paid']]; labels.forEach(([id, label]) => { const node = $(id); if (node) { const parent = node.closest('.split-row'); const b = parent?.querySelector('.person-info b'); if (b) b.textContent = label; } }); const row1 = $('ayushPaid')?.closest('.split-row'), row2 = $('priyatamPaid')?.closest('.split-row'); if (row1) { const b = row1.querySelector('.person-info b'); if (b) b.textContent = first; } if (row2) { const b = row2.querySelector('.person-info b'); if (b) b.textContent = second; } const profile = $('.profile b'); if (profile) profile.textContent = members.find(m => m.user_id === user.id)?.profiles?.display_name || safeName(user); const avatar = $('.profile .avatar'); if (avatar) avatar.textContent = (profile?.textContent || 'R').trim().charAt(0).toUpperCase(); const headerName = $('headerUserName'); if (headerName) headerName.textContent = profile?.textContent || safeName(user); const headerAvatar = $('headerAvatar'); if (headerAvatar) headerAvatar.textContent = (headerName?.textContent || 'R').trim().charAt(0).toUpperCase(); const profileSmall = $('.profile-copy small'); if (profileSmall) profileSmall.textContent = members.find(m => m.user_id === user.id)?.role === 'owner' ? 'Household owner' : 'Household member'; const room = $('.room-card strong'); if (room) room.textContent = names.length > 1 ? first + ' & ' + second + '’s household' : first + '’s household'; const filter = $('personFilter'); if (filter) { filter.innerHTML = '<option value="all">Everyone</option>' + names.map(n => '<option>' + String(n).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) + '</option>').join(''); } }
+      async function loadTransactions() { const { data, error } = await client.from('transactions').select('*').eq('household_id', household.id).is('deleted_at', null).order('transaction_date', { ascending: false }); if (error) throw error; txs = (data || []).map(mapTx); localStorage.setItem('roommates_transactions', JSON.stringify(txs)); render(); }
+      async function loadBudget() { const now = new Date(), month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-01'; const { data, error } = await client.from('budgets').select('limit_paise').eq('household_id', household.id).eq('month', month).is('category', null).maybeSingle(); if (error) { console.warn('Budget load:', error.message); return } if (data) budget = Number(data.limit_paise) / 100; render(); }
+      async function refreshAll() { try { await loadMembers(); await loadTransactions(); await loadBudget() } catch (e) { say('Sync error: ' + e.message) } }
+      $('connectBtn').onclick = async () => { const url = $('sbUrl').value.trim().replace(/\/$/, ''), key = $('sbKey').value.trim(); if (!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url) || !key) { say('Enter a valid Supabase Project URL and publishable/anon key.'); return } localStorage.setItem('roommates_sb_url', url); localStorage.setItem('roommates_sb_key', key); await initClient() };
+      const old = cfg(); $('sbUrl').value = old.url; $('sbKey').value = old.key;
+      const profileSignOut = $('profileSignOut'); if (profileSignOut) profileSignOut.onclick = async () => { if (!client) return; try { await client.auth.signOut(); location.reload() } catch (e) { say('Could not sign out: ' + e.message) } };
+      $('changeConfigBtn').onclick = () => { show('configForm'); say('Update your project details. Existing saved config stays until you connect again.') };
+      $('signUpBtn').onclick = async () => { try { if (!client) throw Error('Connect your project first.'); const email = $('authEmail').value.trim(), password = $('authPassword').value, name = $('authName').value.trim(); if (!email || password.length < 6 || !name) throw Error('Enter display name, email, and a password of at least 6 characters.'); const { data, error } = await client.auth.signUp({ email, password, options: { data: { display_name: name }, emailRedirectTo: location.origin + location.pathname } }); if (error) throw error; if (data.session) { user = data.user; await afterAuth() } else say('Account created. Check your email to confirm the address, then sign in here.') } catch (e) { say(e.message) } };
+      $('signInBtn').onclick = async () => { try { const { data, error } = await client.auth.signInWithPassword({ email: $('authEmail').value.trim(), password: $('authPassword').value }); if (error) throw error; user = data.user; await afterAuth() } catch (e) { say(e.message) } };
+      $('createHouseholdBtn').onclick = async () => { try { const name = $('householdName').value.trim(); if (!name) throw Error('Enter a household name.'); const { data, error } = await client.rpc('create_household', { p_name: name, p_opening: paise($('openingFund').value) }); if (error) throw error; await afterAuth() } catch (e) { say('Could not create household: ' + e.message) } };
+      $('joinHouseholdBtn').onclick = async () => { try { const code = $('inviteCode').value.trim(); if (!code) throw Error('Enter the invite code shared by your roommate.'); const { error } = await client.rpc('join_household', { p_code: code }); if (error) throw error; await afterAuth() } catch (e) { say('Could not join household: ' + e.message) } };
+      $('openAppBtn').onclick = () => { gate.style.display = 'none'; startRealtime(); render() };
+      $('signOutBtn').onclick = async () => { if (realtimeChannel) await client.removeChannel(realtimeChannel); await client.auth.signOut(); user = null; household = null; connected = false; gate.style.display = 'flex'; show('authArea'); say('Signed out.') };
+      function startRealtime() { if (!client || !household) return; if (realtimeChannel) client.removeChannel(realtimeChannel); realtimeChannel = client.channel('roommates-' + household.id).on('postgres_changes', { event: '*', schema: 'public', table: 'transactions', filter: 'household_id=eq.' + household.id }, () => refreshAll()).on('postgres_changes', { event: '*', schema: 'public', table: 'budgets', filter: 'household_id=eq.' + household.id }, () => loadBudget()).subscribe(); }
+      // Shared, database-backed soft delete. The row is hidden for both household members
+       // because loadTransactions filters deleted_at IS NULL and Realtime refreshes both clients.
+       window.roommatesDeleteTransaction = async function (id) {
+         try {
+           if (!client || !user || !household) throw Error('Connect and sign in first.');
+           const { data, error } = await client.from('transactions')
+             .update({ deleted_at: new Date().toISOString() })
+             .eq('id', id)
+             .eq('household_id', household.id)
+             .is('deleted_at', null)
+             .select('id');
+           if (error) throw error;
+           if (!data || data.length === 0) {
+             throw Error('No transaction was changed. Supabase may be blocking the update with Row Level Security (RLS); apply the supplied SQL patch and try again.');
+           }
+           await refreshAll();
+           toast('Transaction deleted for both roommates');
+         } catch (err) {
+           say('Delete failed: ' + err.message);
+           toast('Delete failed: ' + err.message);
+         }
+       };
+       // Replace demo/localStorage submission with authenticated database writes.
+      const form = $('txForm'), newForm = form.cloneNode(true); form.parentNode.replaceChild(newForm, form); newForm.addEventListener('submit', async e => {
+        e.preventDefault(); try {
+          if (!client || !user || !household) throw Error('Connect and sign in first.'); const fd = new FormData(newForm), kind = window.currentAction || document.getElementById('modalTitle').textContent.toLowerCase().includes('contribution') ? 'contribution' : 'expense'; const amount = Number(fd.get('amount')); if (!Number.isFinite(amount) || amount <= 0) throw Error('Enter a valid amount.'); const payer = String(fd.get('person')); const payerMember = members.find(m => { const n = (m.profiles?.display_name || '').toLowerCase(); return n === payer.toLowerCase() || n.startsWith(payer.toLowerCase()) || payer.toLowerCase().startsWith(n) }) || members.find(m => m.user_id === user.id); if (!payerMember) throw Error('Could not match payer to a household member. Reload the page and try again.'); const methodMap = { 'UPI': 'upi', 'Cash': 'cash', 'Bank transfer': 'bank_transfer', 'Other': 'other' }; let error;
+          if (kind === 'contribution') { const res = await client.from('transactions').insert({ household_id: household.id, transaction_type: 'contribution', payer_id: payerMember.user_id, title: fd.get('title').trim(), amount_paise: paise(amount), transaction_date: new Date(fd.get('date') + 'T12:00:00').toISOString(), payment_method: methodMap[fd.get('method')] || 'upi', description: fd.get('description') || null }); error = res.error }
+          else { const type = fd.get('expenseType'), source = fd.get('paymentSource'); if (type === 'personal' && source === 'fund') throw Error('Personal expenses cannot be paid from the shared fund.'); const splits = type === 'shared' ? members.map(m => ({ user_id: m.user_id, share_paise: Math.floor(paise(amount) / members.length) })) : []; if (type === 'shared' && splits.length === 2) splits[1].share_paise = paise(amount) - splits[0].share_paise; const res = await client.rpc('add_expense', { p_household: household.id, p_title: fd.get('title').trim(), p_amount: paise(amount), p_category: fd.get('category'), p_payer: payerMember.user_id, p_type: type, p_source: source, p_method: methodMap[fd.get('method')] || 'upi', p_date: new Date(fd.get('date') + 'T12:00:00').toISOString(), p_description: fd.get('description') || null, p_notes: null, p_receipt: null, p_splits: splits }); error = res.error }
+          if (error) throw error; closeModal(); newForm.reset(); await refreshAll(); toast(kind === 'contribution' ? 'Contribution synced' : 'Expense synced to your household');
+        } catch (err) { say('Save failed: ' + err.message); toast('Could not save: ' + err.message) }
+      }, true);
+      $('saveBudget').onclick = async () => { try { if (!client || !household) throw Error('Connect and sign in first.'); const val = Math.max(0, Number($('budgetInput').value) || 0); if (val <= 0) throw Error('Budget must be greater than zero.'); const now = new Date(), month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-01'; const existing = await client.from('budgets').select('id').eq('household_id', household.id).eq('month', month).is('category', null).maybeSingle(); if (existing.error) throw existing.error; let result; if (existing.data) result = await client.from('budgets').update({ limit_paise: paise(val) }).eq('id', existing.data.id); else result = await client.from('budgets').insert({ household_id: household.id, month, category: null, limit_paise: paise(val) }); if (result.error) throw result.error; budget = val; render(); toast('Household budget synced') } catch (e) { toast('Budget save failed: ' + e.message); say(e.message) } };
+      // On successful session, user can enter the app. Keep gate open until they explicitly open it.
+      initClient().catch(e => say(e.message));
+    })();
+  </script>
+
+</body>
+
+</html>
