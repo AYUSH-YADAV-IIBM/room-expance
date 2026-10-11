@@ -1654,18 +1654,7 @@
       const paise = n => Math.round(Number(n || 0) * 100);
       const dateIso = d => d ? new Date(d).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
       function mapTx(t) { return { id: t.id, kind: t.transaction_type, title: t.title, category: t.category || (t.transaction_type === 'contribution' ? 'Contribution' : 'Other'), amount: Number(t.amount_paise || 0) / 100, person: members.find(m => m.user_id === t.payer_id)?.profiles?.display_name || t.created_by_name || 'Roommate', payerId: t.payer_id, date: dateIso(t.transaction_date), expenseType: t.expense_type, paymentSource: t.payment_source, method: ({ upi: 'UPI', cash: 'Cash', bank_transfer: 'Bank transfer', other: 'Other' })[t.payment_method] || 'UPI', description: t.description || t.notes || '', createdBy: t.created_by_name, deletedAt: t.deleted_at }; }
-      async function initClient() { const c = cfg(); if (!c.url || !c.key) { show('configForm'); return } if (!window.supabase?.createClient) { say('Supabase client library did not load. Check your internet connection and refresh.'); show('configForm'); return } try { client = window.supabase.createClient(c.url, c.key); const { data, error } = await client.auth.getSession(); if (error) throw error; if (data.session) { user = data.session.user; await afterAuth() } else { show('authArea'); say('Project details saved on this browser. Sign in or create your account.'); } } catch (e) { say('Saved project details were loaded, but connection/setup failed: ' + e.message + ' If the URL or key is wrong, use Change project to update it.'); show('authArea'); } }
-      (async () => {
-  const config = cfg();
-
-  if (config.url && config.key) {
-    $('sbUrl').value = config.url;
-    $('sbKey').value = config.key;
-    await initClient();
-  } else {
-    show('configForm');
-  }
-})();
+      async function initClient() { const c = cfg(); if (!c.url || !c.key) { show('configForm'); return } if (!window.supabase?.createClient) { say('Supabase client library did not load. Check your internet connection and refresh.'); show('configForm'); return } try { client = window.supabase.createClient(c.url, c.key); const { data, error } = await client.auth.getSession(); if (error) throw error; if (data.session) { user = data.session.user; await afterAuth() } else { show('authArea'); say('Project details saved on this browser. Sign in or create your account.'); } } catch (e) { say('Supabase connection failed: ' + e.message + '. Check the project URL/key and network, then use Change project if needed.'); show('configForm'); } }
       async function afterAuth() {
         const { data: prof, error: pErr } = await client.from('profiles').select('display_name').eq('id', user.id).maybeSingle(); if (pErr) throw pErr;
         const { data: membership, error: mErr } = await client.from('household_members').select('household_id,role,households(id,name,invite_code,opening_fund_paise)').eq('user_id', user.id).maybeSingle(); if (mErr) throw mErr;
@@ -1677,24 +1666,21 @@
       async function loadBudget() { const now = new Date(), month = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-01'; const { data, error } = await client.from('budgets').select('limit_paise').eq('household_id', household.id).eq('month', month).is('category', null).maybeSingle(); if (error) { console.warn('Budget load:', error.message); return } if (data) budget = Number(data.limit_paise) / 100; render(); }
       async function refreshAll() { try { await loadMembers(); await loadTransactions(); await loadBudget() } catch (e) { say('Sync error: ' + e.message) } }
 
-$('connectBtn').onclick = async () => {
-  const config = cfg();
-  const url = $('sbUrl').value.trim().replace(/\/$/, '') || config.url;
-  const key = $('sbKey').value.trim() || config.key;
-
-  if (!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url) || !key) {
-    say('Supabase configuration is missing.');
-    return;
-  }
-
-  localStorage.setItem('roommates_sb_url', url);
-  localStorage.setItem('roommates_sb_key', key);
-
-  await initClient();
-};
+      $('connectBtn').onclick = async () => {
+        const defaults = cfg();
+        const url = ($('sbUrl').value || defaults.url).trim().replace(/\/$/, '');
+        const key = ($('sbKey').value || defaults.key).trim();
+        if (!/^https:\/\/[\w.-]+\.supabase\.co$/.test(url) || !key) {
+          say('Supabase configuration is missing.');
+          show('configForm');
+          return;
+        }
+        localStorage.setItem('roommates_sb_url', url);
+        localStorage.setItem('roommates_sb_key', key);
+        await initClient();
+      };
       const old = cfg(); $('sbUrl').value = old.url; $('sbKey').value = old.key;
-      // Project URL is preconfigured. The publishable key is saved in this browser after the first successful Connect project action.
-      if (!old.key) $('gateMessage').textContent = 'Project URL is already configured. Enter your Supabase publishable/anon key once; it will be saved in this browser.';
+      // Project URL and publishable key are preconfigured in this app. They are public client settings; database access must be protected by Supabase RLS.
       const profileSignOut = $('profileSignOut'); if (profileSignOut) profileSignOut.onclick = async () => { if (!client) return; try { await client.auth.signOut(); location.reload() } catch (e) { say('Could not sign out: ' + e.message) } };
       $('changeConfigBtn').onclick = () => { show('configForm'); say('Update your project details. Existing saved config stays until you connect again.') };
       $('signUpBtn').onclick = async () => { try { if (!client) throw Error('Connect your project first.'); const email = $('authEmail').value.trim(), password = $('authPassword').value, name = $('authName').value.trim(); if (!email || password.length < 6 || !name) throw Error('Enter display name, email, and a password of at least 6 characters.'); const { data, error } = await client.auth.signUp({ email, password, options: { data: { display_name: name }, emailRedirectTo: location.origin + location.pathname } }); if (error) throw error; if (data.session) { user = data.user; await afterAuth() } else say('Account created. Check your email to confirm the address, then sign in here.') } catch (e) { say(e.message) } };
