@@ -1647,10 +1647,7 @@
     (function () {
       const $ = id => document.getElementById(id), gate = $('connectionGate');
       let client = null, user = null, household = null, members = [], realtimeChannel = null, connected = false;
-      // Paste your Supabase Publishable key below (sb_publishable_... or legacy anon key). Never use service_role/secret here.
-      const SUPABASE_URL = 'https://hymnhoslohgoiohsdbeq.supabase.co';
-      const SUPABASE_PUBLISHABLE_KEY = 'PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
-      const cfg = () => ({ url: SUPABASE_URL, key: (SUPABASE_PUBLISHABLE_KEY !== 'PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE' ? SUPABASE_PUBLISHABLE_KEY : (localStorage.getItem('roommates_sb_key') || '')) });
+      const cfg = () => ({ url: localStorage.getItem('roommates_sb_url') || 'https://hymnhoslohgoiohsdbeq.supabase.co', key: localStorage.getItem('roommates_sb_key') || 'sb_publishable_LV2c1i7RiICmE3PlJjxCgg_Zew4DFLd' });
       const say = m => { $('gateMessage').textContent = m };
       const show = which => { ['configForm', 'authArea', 'householdArea', 'connectedArea'].forEach(id => $(id).style.display = id === which ? 'block' : 'none') };
       const safeName = u => u?.user_metadata?.display_name || u?.email?.split('@')[0] || 'Roommate';
